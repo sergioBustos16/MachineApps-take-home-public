@@ -144,7 +144,7 @@ dist
 .project
 .classpath
 .settings/
-
+.agents/
 # OS
 .DS_Store
 Thumbs.db
