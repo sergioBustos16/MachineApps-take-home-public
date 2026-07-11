@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, status
@@ -12,6 +13,8 @@ from gantry_fsm import GantryRobotStateMachine
 from controller import RobotController
 from domain.exceptions import RobotBusyError, FaultResetError
 from domain.models import RobotConfiguration
+
+DEFAULT_DATABASE_URL = "sqlite:///./gantry_robot.db"
 
 class AppContainer:
     def __init__(self):
@@ -36,7 +39,7 @@ async def lifespan(app: FastAPI):
     bootstrap(
         app=app,
         accessors=[container.config_accessor],
-        database_url="sqlite:///./gantry_robot.db",
+        database_url=os.getenv("DATABASE_URL", DEFAULT_DATABASE_URL),
         create_tables=True,
         enable_db_router=False
     )

@@ -3,6 +3,7 @@ import time
 import logging
 from datetime import datetime, timezone
 from typing import Optional
+from domain.enums import CubeStatus
 from communication.decorators import stream
 from gantry_fsm import GantryRobotStateMachine
 from configuration_service import ConfigurationService
@@ -69,6 +70,14 @@ class RobotController:
          
          cube_pos = Vector3(x=cfg.cube_position.x, y=cfg.cube_position.y, z=cfg.cube_position.z)
          dest_pos = Vector3(x=cfg.destination_position.x, y=cfg.destination_position.y, z=cfg.destination_position.z)
+         if fsm.cube_status == CubeStatus.AT_SOURCE:
+              cube_current_pos = cube_pos
+         else:
+              cube_current_pos = Vector3(
+                   x=fsm.cube_current_position[0],
+                   y=fsm.cube_current_position[1],
+                   z=fsm.cube_current_position[2],
+              )
          
          return TelemetrySnapshot(
               timestamp=datetime.now(timezone.utc),
@@ -80,7 +89,7 @@ class RobotController:
               velocity=Vector3(x=vel[0], y=vel[1], z=vel[2]),
               target_position=get_current_target(fsm),
               cube_position=cube_pos,
-              cube_current_position=Vector3(x=fsm.cube_current_position[0], y=fsm.cube_current_position[1], z=fsm.cube_current_position[2]),
+              cube_current_position=cube_current_pos,
               cube_status=fsm.cube_status,
               destination_position=dest_pos,
               workspace_bounds=STATIC_LIMITS,

@@ -218,7 +218,7 @@ export function App() {
                 fontWeight: "600",
               }}
             >
-              ❌ Operation Error: {actionError}
+              Operation Error: {actionError}
             </div>
           )}
 
@@ -234,7 +234,7 @@ export function App() {
               }}
             >
               <h3 style={{ color: "var(--color-danger)", marginTop: 0, marginBottom: "0.5rem", display: "flex", alignItems: "center" }}>
-                🚨 ACTIVE STATE FAULT
+                ACTIVE STATE FAULT
               </h3>
               <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.7)", fontFamily: "monospace", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
                 <div>CODE: <strong>{telemetry.last_error.code}</strong></div>

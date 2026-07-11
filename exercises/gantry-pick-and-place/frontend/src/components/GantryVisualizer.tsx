@@ -305,12 +305,12 @@ export const GantryVisualizer: React.FC<GantryVisualizerProps> = ({ telemetry })
               fontFamily: "monospace",
             }}
           >
-            ⚙️ {telemetry.gripper_state}
+            {telemetry.gripper_state}
           </div>
         </div>
       </div>
 
-      <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
+      <canvas ref={canvasRef} className="gantry-canvas" />
 
       <div className="canvas-footer">
         <div>

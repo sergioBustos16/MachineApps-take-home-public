@@ -80,7 +80,7 @@ export const StateTracker: React.FC<StateTrackerProps> = ({ state, isStale }) =>
           return (
             <div key={stateKey} className={stepClass}>
               <div className="step-indicator">
-                {isCompleted ? "✓" : stepMeta.stepIndex + 1}
+                {isCompleted ? "OK" : stepMeta.stepIndex + 1}
               </div>
               <div className="step-label">{stepMeta.label}</div>
             </div>

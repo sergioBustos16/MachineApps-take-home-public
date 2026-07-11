@@ -56,14 +56,17 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     err = checkPosition(config.home_position, "Home Position");
     if (err) return (setValidationError(err), false);
 
-    if (typeof config.safe_z !== "number" || config.safe_z < 0 || config.safe_z > limits.max) {
-      return (setValidationError(`Safe Z height must be between 0 and ${limits.max}`), false);
+    if (typeof config.safe_z !== "number" || config.safe_z < limits.min || config.safe_z > limits.max) {
+      return (setValidationError(`Safe Z height must be between ${limits.min} and ${limits.max}`), false);
     }
-    if (typeof config.travel_speed !== "number" || config.travel_speed <= 0 || config.travel_speed > 500) {
-      return (setValidationError("Travel speed must be between 1 and 500 mm/s"), false);
+    if (config.safe_z <= Math.max(config.cube_position.z, config.destination_position.z)) {
+      return (setValidationError("Safe Z height must be above both cube and destination Z coordinates"), false);
     }
-    if (typeof config.home_speed !== "number" || config.home_speed <= 0 || config.home_speed > 250) {
-      return (setValidationError("Home speed must be between 1 and 250 mm/s"), false);
+    if (typeof config.travel_speed !== "number" || config.travel_speed <= 0 || config.travel_speed > 100) {
+      return (setValidationError("Travel speed must be greater than 0 and no more than 100 mm/s"), false);
+    }
+    if (typeof config.home_speed !== "number" || config.home_speed <= 0 || config.home_speed > 100) {
+      return (setValidationError("Home speed must be greater than 0 and no more than 100 mm/s"), false);
     }
 
     setValidationError(null);

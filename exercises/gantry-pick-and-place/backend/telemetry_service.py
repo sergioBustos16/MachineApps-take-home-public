@@ -27,12 +27,12 @@ def get_current_target(fsm: GantryRobotStateMachine) -> Optional[Vector3]:
          
     targets = {
         str(RobotOperationStates.HOMING): plan.home,
-        str(PickAndPlaceStates.MOVE_ABOVE_CUBE): plan.above_cube,
-        str(PickAndPlaceStates.LOWER_TO_CUBE): plan.cube,
-        str(PickAndPlaceStates.LIFT_CUBE): plan.above_cube,
-        str(PickAndPlaceStates.MOVE_ABOVE_DESTINATION): plan.above_destination,
-        str(PickAndPlaceStates.LOWER_TO_DESTINATION): plan.destination,
-        str(PickAndPlaceStates.LIFT_FROM_DESTINATION): plan.above_destination,
+        str(PickAndPlaceStates.MOVEABOVECUBE): plan.above_cube,
+        str(PickAndPlaceStates.LOWERTOCUBE): plan.cube,
+        str(PickAndPlaceStates.LIFTCUBE): plan.above_cube,
+        str(PickAndPlaceStates.MOVEABOVEDESTINATION): plan.above_destination,
+        str(PickAndPlaceStates.LOWERTODESTINATION): plan.destination,
+        str(PickAndPlaceStates.LIFTFROMDESTINATION): plan.above_destination,
     }
     raw = targets.get(fsm.state)
     if raw is None:

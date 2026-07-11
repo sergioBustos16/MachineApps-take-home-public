@@ -1,3 +1,127 @@
+# Gantry Pick & Place Solution
+
+This implementation is a proof-of-concept 3-axis gantry pick-and-place simulator for the Vention take-home exercise. 
+It uses a FastAPI backend with Vention communication, state-machine, and storage libraries, plus a React/TypeScript frontend for configuration, telemetry, controls, and visualization.
+
+## Quick Start: Local Development
+
+Use PowerShell from the exercise folder:
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public\exercises\gantry-pick-and-place
+```
+
+Check the installed tools:
+
+```powershell
+python --version
+py --version
+node --version
+npm --version
+docker --version
+```
+
+Required backend runtime: Python 3.10. The Vention packages used by this exercise declare support for Python >=3.10,<3.11. Use Docker if Python 3.10 is not installed locally. Recommended frontend runtime: Node.js 20+.
+
+### Backend
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+cd .\exercises\gantry-pick-and-place\backend
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pytest
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+The backend exposes:
+
+- `GET /api/configuration` for saved robot/cube/destination settings.
+- `PUT /api/configuration` for updating settings while the robot is ready.
+- `GET /api/telemetry` for the latest robot telemetry snapshot.
+- `POST /api/commands/home` to move to the configured home position.
+- `POST /api/commands/start` to run the pick-and-place sequence.
+- `POST /api/commands/reset` to reset from a fault state.
+
+### Frontend
+
+Open a second PowerShell window:
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public\exercises\gantry-pick-and-place\frontend
+npm install
+npm run dev
+```
+
+Open the app at:
+
+```text
+http://localhost:3000
+```
+
+## How To Use The App
+
+1. Start the backend and frontend.
+2. Confirm the dashboard shows robot position, cube position, destination, gripper state, motion status, and current FSM state.
+3. Adjust cube, destination, home, safe Z, and speed values if needed.
+4. Click `Home Gantry` first. The backend intentionally blocks `Start Sequence` until homing succeeds.
+5. Click `Start Sequence`.
+6. Watch the sequence: move above cube, lower, close gripper, lift, move above destination, lower, open gripper, and lift away.
+
+## Docker
+
+To run the full stack with one command:
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public\exercises\gantry-pick-and-place
+docker compose up --build
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+The Docker backend reads `DATABASE_URL` from `docker-compose.yml`, so the SQLite database is stored in the configured Docker volume.
+
+## Design Decisions
+
+- The backend owns robot state, cube attachment, gripper state, and sequence progression so the frontend cannot visually jump ahead of the simulated robot.
+- The FSM callbacks repeatedly call `robot_sim.py` movement methods until motion completes, matching the exercise requirement.
+- Homing is required before starting a sequence and after fault reset. This makes the demo flow explicit and keeps recovery deterministic.
+- Configuration is persisted with `vention-storage` and served through the backend, while telemetry is available through both Vention streaming and HTTP polling fallback.
+- Frontend validation mirrors backend and simulator limits: coordinates are bounded to `[-1000, 1000]`, speeds must be greater than `0` and no more than `100`, and safe Z must be above cube and destination Z.
+
+## Verification
+
+Run backend checks:
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public
+.\.venv\Scripts\Activate.ps1
+cd .\exercises\gantry-pick-and-place\backend
+pytest
+```
+
+Run frontend checks:
+
+```powershell
+cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public\exercises\gantry-pick-and-place\frontend
+npm run build
+```
+
+Manual acceptance test:
+
+- Save a valid configuration.
+- Home the gantry.
+- Start the sequence.
+- Confirm the robot completes the full pick-and-place path and returns to ready.
+- Confirm invalid speeds over `100` or unsafe safe-Z values are rejected before save.
+
+## Original Exercise Requirements
 # **Robot Pick & Place Simulation**
 
 ## **Problem Statement**

@@ -54,7 +54,7 @@ export const CommandBar: React.FC<CommandBarProps> = ({
               fontWeight: "600",
             }}
           >
-            ⚠️ Safe homing is mandatory before starting sequence
+            Safe homing is mandatory before starting sequence
           </div>
         )}
       </div>
