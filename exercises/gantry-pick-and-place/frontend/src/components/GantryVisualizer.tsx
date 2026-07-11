@@ -265,67 +265,34 @@ export const GantryVisualizer: React.FC<GantryVisualizerProps> = ({ telemetry })
   const v = telemetry.velocity;
 
   return (
-    <div className="gantry-canvas-container">
-      <div className="canvas-header">
-        <div
-          style={{
-            background: "rgba(10, 15, 30, 0.75)",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "6px",
-            border: "1px solid var(--border-light)",
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          <div style={{ fontSize: "0.75rem", color: "var(--color-text-dim)", fontWeight: "600", textTransform: "uppercase" }}>
-            Current State
-          </div>
-          <div style={{ fontSize: "1rem", fontWeight: "700", color: "#fff", fontFamily: "monospace" }}>
-            {telemetry.state}
-          </div>
+    <div className="gantry-visualizer">
+      <div className="gantry-status-strip" aria-label="Gantry status summary">
+        <div className="gantry-status-card">
+          <span>Current State</span>
+          <strong>{telemetry.state}</strong>
         </div>
-        
-        <div
-          style={{
-            background: "rgba(10, 15, 30, 0.75)",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "6px",
-            border: "1px solid var(--border-light)",
-            backdropFilter: "blur(8px)",
-            textAlign: "right",
-          }}
-        >
-          <div style={{ fontSize: "0.75rem", color: "var(--color-text-dim)", fontWeight: "600", textTransform: "uppercase" }}>
-            Gripper State
-          </div>
-          <div
-            style={{
-              fontSize: "1rem",
-              fontWeight: "700",
-              color: telemetry.gripper_state === "CLOSED" ? "var(--color-primary)" : "#fff",
-              fontFamily: "monospace",
-            }}
-          >
-            {telemetry.gripper_state}
-          </div>
+        <div className="gantry-status-card">
+          <span>Gripper State</span>
+          <strong>{telemetry.gripper_state}</strong>
         </div>
       </div>
 
-      <canvas ref={canvasRef} className="gantry-canvas" />
+      <div className="gantry-canvas-container">
+        <canvas ref={canvasRef} className="gantry-canvas" />
+      </div>
 
-      <div className="canvas-footer">
+      <div className="gantry-metrics-strip" aria-label="Gantry position and velocity">
         <div>
-          POSITION:{" "}
-          <strong style={{ fontFamily: "monospace", color: "#fff" }}>
-            X:{p.x.toFixed(1)} Y:{p.y.toFixed(1)} Z:{p.z.toFixed(1)}
-          </strong>{" "}
-          mm
+          <span>Position</span>
+          <strong>
+            X:{p.x.toFixed(1)} Y:{p.y.toFixed(1)} Z:{p.z.toFixed(1)} mm
+          </strong>
         </div>
-        <div style={{ borderLeft: "1px solid rgba(255,255,255,0.1)", paddingLeft: "1.5rem" }}>
-          VELOCITY:{" "}
-          <strong style={{ fontFamily: "monospace", color: "var(--color-primary)" }}>
-            vX:{v.x.toFixed(1)} vY:{v.y.toFixed(1)} vZ:{v.z.toFixed(1)}
-          </strong>{" "}
-          mm/s
+        <div>
+          <span>Velocity</span>
+          <strong>
+            vX:{v.x.toFixed(1)} vY:{v.y.toFixed(1)} vZ:{v.z.toFixed(1)} mm/s
+          </strong>
         </div>
       </div>
     </div>

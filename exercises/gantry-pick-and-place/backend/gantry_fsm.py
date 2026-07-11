@@ -11,7 +11,7 @@ from domain.models import RobotConfiguration, MotionPlan, StateMachineError
 
 logger = logging.getLogger("vention.app.state_machine")
 
-MOTION_TIMEOUT_SECONDS = 10.0
+MOTION_TIMEOUT_SECONDS = 30.0
 COMPLETION_HOLD_SECONDS = 1.0
 
 class RobotOperationStates(StateGroup):
@@ -184,6 +184,7 @@ class GantryRobotStateMachine(StateMachine):
 
     def _enter_fault(self, exc: Exception) -> None:
         self.last_error = self._build_error(exc)
+        self.robot.stop_motion()
         logger.error("FSM fault in state %s: %s", self.state, exc, exc_info=(type(exc), exc, exc.__traceback__))
         try:
             self.trigger(BaseTriggers.TO_FAULT.value)

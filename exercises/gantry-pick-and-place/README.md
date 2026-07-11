@@ -1,6 +1,6 @@
 # Gantry Pick & Place Solution
 
-This implementation is a proof-of-concept 3-axis gantry pick-and-place simulator for the Vention take-home exercise. 
+This implementation is a proof-of-concept 3-axis gantry pick-and-place simulator for the Vention take-home exercise.
 It uses a FastAPI backend with Vention communication, state-machine, and storage libraries, plus a React/TypeScript frontend for configuration, telemetry, controls, and visualization.
 
 ## Quick Start: Local Development
@@ -21,7 +21,7 @@ npm --version
 docker --version
 ```
 
-Required backend runtime: Python 3.10. The Vention packages used by this exercise declare support for Python >=3.10,<3.11. Use Docker if Python 3.10 is not installed locally. Recommended frontend runtime: Node.js 20+.
+Required backend runtime: Python 3.10. The Vention packages used by this exercise declare support for Python >=3.10,<3.11 Recommended frontend runtime: Node.js 20+.
 
 ### Backend
 

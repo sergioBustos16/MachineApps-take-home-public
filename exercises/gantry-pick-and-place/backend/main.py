@@ -126,3 +126,6 @@ async def reset_fault():
         "state": "ready", 
         "requiresHoming": True
     }
+
+# Finalize the VentionApp to compile all actions/streams and enable telemetry streaming
+app.finalize()

@@ -82,3 +82,20 @@ def test_homing_block_and_successful_sequence_cycle(test_config):
         fsm.execute_current_callback()
         gantry_pos = adapter.get_position()
         assert fsm.cube_current_position == gantry_pos
+
+def test_fault_stops_active_motion(test_config):
+    robot = Robot(initial_position=[800.0, 800.0, 500.0])
+    adapter = RobotAdapter(robot)
+    fsm = GantryRobotStateMachine(adapter)
+
+    fsm.start_homing(test_config)
+    fsm.execute_current_callback()
+    assert adapter.is_moving()
+
+    fsm._state_started_at = time.monotonic() - 31.0
+    fsm.execute_current_callback()
+
+    assert fsm.state == "fault"
+    assert fsm.last_error.code == "MOTION_TIMEOUT"
+    assert not adapter.is_moving()
+    assert adapter.get_velocity() == (0, 0, 0)

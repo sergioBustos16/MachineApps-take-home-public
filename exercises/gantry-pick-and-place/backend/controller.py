@@ -101,6 +101,8 @@ class RobotController:
     async def _run(self) -> None:
         last_publish = 0.0
         try:
+             # Allow FastAPI and the Vention app enough time to fully finalize streams
+             await asyncio.sleep(1.0)
              while self._running:
                  started_at = time.monotonic()
                  

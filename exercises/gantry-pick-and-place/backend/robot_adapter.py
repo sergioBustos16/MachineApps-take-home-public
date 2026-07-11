@@ -21,6 +21,9 @@ class RobotAdapter:
     def is_moving(self) -> bool:
         return any(abs(v) > MOTION_EPSILON for v in self._robot.axis_speed)
 
+    def stop_motion(self) -> None:
+        self._robot.axis_speed = [0, 0, 0]
+
     def is_gripper_closed(self) -> bool:
         return self._robot.gripper_state == GripperState.CLOSED
 

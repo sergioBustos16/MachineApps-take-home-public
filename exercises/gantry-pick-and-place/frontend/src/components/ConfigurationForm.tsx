@@ -87,6 +87,39 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     }
   };
 
+  const renderCoordinateInputs = (
+    section: "cube_position" | "destination_position" | "home_position",
+    title: string
+  ) => {
+    const position = config[section];
+    const axes: Array<{ key: "x" | "y" | "z"; label: string }> = [
+      { key: "x", label: "X axis" },
+      { key: "y", label: "Y axis" },
+      { key: "z", label: "Z axis" },
+    ];
+
+    return (
+      <div className="form-group">
+        <label>{title}</label>
+        <div className="input-row coordinate-row">
+          {axes.map((axis) => (
+            <div className="coordinate-field" key={`${section}-${axis.key}`}>
+              <span className="coordinate-label">{axis.label}</span>
+              <input
+                type="number"
+                className="form-input"
+                aria-label={`${title} ${axis.label}`}
+                disabled={disabled}
+                value={position[axis.key]}
+                onChange={(e) => handleChange(section, axis.key, e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <form className="glass-panel" onSubmit={handleSubmit}>
       <h2>Configuration</h2>
@@ -108,98 +141,9 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         </div>
       )}
 
-      {/* Cube Source coordinates */}
-      <div className="form-group">
-        <label>Cube Position (mm)</label>
-        <div className="input-row">
-          <input
-            type="number"
-            className="form-input"
-            placeholder="X"
-            disabled={disabled}
-            value={config.cube_position.x}
-            onChange={(e) => handleChange("cube_position", "x", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Y"
-            disabled={disabled}
-            value={config.cube_position.y}
-            onChange={(e) => handleChange("cube_position", "y", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Z"
-            disabled={disabled}
-            value={config.cube_position.z}
-            onChange={(e) => handleChange("cube_position", "z", e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Destination Position coordinates */}
-      <div className="form-group">
-        <label>Destination Position (mm)</label>
-        <div className="input-row">
-          <input
-            type="number"
-            className="form-input"
-            placeholder="X"
-            disabled={disabled}
-            value={config.destination_position.x}
-            onChange={(e) => handleChange("destination_position", "x", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Y"
-            disabled={disabled}
-            value={config.destination_position.y}
-            onChange={(e) => handleChange("destination_position", "y", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Z"
-            disabled={disabled}
-            value={config.destination_position.z}
-            onChange={(e) => handleChange("destination_position", "z", e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Home Coordinates */}
-      <div className="form-group">
-        <label>Home Position (mm)</label>
-        <div className="input-row">
-          <input
-            type="number"
-            className="form-input"
-            placeholder="X"
-            disabled={disabled}
-            value={config.home_position.x}
-            onChange={(e) => handleChange("home_position", "x", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Y"
-            disabled={disabled}
-            value={config.home_position.y}
-            onChange={(e) => handleChange("home_position", "y", e.target.value)}
-          />
-          <input
-            type="number"
-            className="form-input"
-            placeholder="Z"
-            disabled={disabled}
-            value={config.home_position.z}
-            onChange={(e) => handleChange("home_position", "z", e.target.value)}
-          />
-        </div>
-      </div>
+      {renderCoordinateInputs("cube_position", "Cube Position (mm)")}
+      {renderCoordinateInputs("destination_position", "Destination Position (mm)")}
+      {renderCoordinateInputs("home_position", "Home Position (mm)")}
 
       {/* Operational Limits */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
@@ -208,6 +152,7 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           <input
             type="number"
             className="form-input"
+            aria-label="Safe Z height"
             disabled={disabled}
             value={config.safe_z}
             onChange={(e) => handleChange(null, "safe_z", e.target.value)}
@@ -218,6 +163,7 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           <input
             type="number"
             className="form-input"
+            aria-label="Travel speed"
             disabled={disabled}
             value={config.travel_speed}
             onChange={(e) => handleChange(null, "travel_speed", e.target.value)}
@@ -230,6 +176,7 @@ export const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         <input
           type="number"
           className="form-input"
+          aria-label="Home speed"
           disabled={disabled}
           value={config.home_speed}
           onChange={(e) => handleChange(null, "home_speed", e.target.value)}
