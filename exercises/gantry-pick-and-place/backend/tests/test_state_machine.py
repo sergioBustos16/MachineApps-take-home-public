@@ -59,7 +59,7 @@ def test_homing_block_and_successful_sequence_cycle(test_config):
         assert fsm.cube_status == CubeStatus.AT_SOURCE
         
         # Simulate sequence ticks
-        # Step 1: Move above cube (0,0,0) -> (100,100,500)
+        # Step 1: Raise to safe Z, traverse X/Y at safe Z, then settle above cube
         ticks = 0
         while fsm.state == str(PickAndPlaceStates.MOVEABOVECUBE) and ticks < 100:
              fsm.execute_current_callback()
@@ -92,10 +92,38 @@ def test_fault_stops_active_motion(test_config):
     fsm.execute_current_callback()
     assert adapter.is_moving()
 
-    fsm._state_started_at = time.monotonic() - 31.0
+    fsm._state_started_at = time.monotonic() - 61.0
     fsm.execute_current_callback()
 
     assert fsm.state == "fault"
     assert fsm.last_error.code == "MOTION_TIMEOUT"
     assert not adapter.is_moving()
     assert adapter.get_velocity() == (0, 0, 0)
+
+def test_move_above_cube_raises_to_safe_z_before_xy_travel(test_config):
+    robot = Robot(initial_position=[0.0, 0.0, 0.0])
+    adapter = RobotAdapter(robot)
+    fsm = GantryRobotStateMachine(adapter)
+    fsm.requires_homing = False
+
+    fsm.start_sequence(test_config)
+    fsm.execute_current_callback()
+
+    vx, vy, vz = adapter.get_velocity()
+    assert vx == 0.0
+    assert vy == 0.0
+    assert vz > 0.0
+
+
+def test_homing_raises_to_safe_z_before_xy_travel(test_config):
+    robot = Robot(initial_position=[800.0, 800.0, 0.0])
+    adapter = RobotAdapter(robot)
+    fsm = GantryRobotStateMachine(adapter)
+
+    fsm.start_homing(test_config)
+    fsm.execute_current_callback()
+
+    vx, vy, vz = adapter.get_velocity()
+    assert vx == 0.0
+    assert vy == 0.0
+    assert vz > 0.0

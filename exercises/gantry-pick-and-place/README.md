@@ -1,6 +1,6 @@
 # Gantry Pick & Place Solution
 
-This implementation is a proof-of-concept 3-axis gantry pick-and-place simulator for the Vention take-home exercise.
+This implementation is a proof-of-concept 3-axis gantry pick-and-place simulator for the Vention take-home exercise. 
 It uses a FastAPI backend with Vention communication, state-machine, and storage libraries, plus a React/TypeScript frontend for configuration, telemetry, controls, and visualization.
 
 ## Quick Start: Local Development
@@ -16,7 +16,7 @@ Check the installed tools:
 ```powershell
 python --version
 py --version
-node --version
+node --version 
 npm --version
 docker --version
 ```
@@ -26,7 +26,7 @@ Required backend runtime: Python 3.10. The Vention packages used by this exercis
 ### Backend
 
 ```powershell
-cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public
+#On your root folder run
 py -3.10 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 cd .\exercises\gantry-pick-and-place\backend
@@ -50,7 +50,7 @@ The backend exposes:
 Open a second PowerShell window:
 
 ```powershell
-cd C:\Users\sergo\Documents\dev\MachineApps-take-home-public\exercises\gantry-pick-and-place\frontend
+cd exercises\gantry-pick-and-place\frontend
 npm install
 npm run dev
 ```

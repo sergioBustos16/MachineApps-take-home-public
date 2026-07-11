@@ -11,7 +11,7 @@ from domain.models import RobotConfiguration, MotionPlan, StateMachineError
 
 logger = logging.getLogger("vention.app.state_machine")
 
-MOTION_TIMEOUT_SECONDS = 30.0
+MOTION_TIMEOUT_SECONDS = 60.0
 COMPLETION_HOLD_SECONDS = 1.0
 
 class RobotOperationStates(StateGroup):
@@ -202,16 +202,33 @@ class GantryRobotStateMachine(StateMachine):
 
     # ---------- Handlers ----------
 
+    def _safe_z(self) -> float:
+        plan = self._require_motion_plan()
+        return plan.above_cube[2]
+
+    def _move_to_with_safe_clearance(self, target: tuple[float, float, float], speed: float) -> bool:
+        current_x, current_y, current_z = self.robot.get_position()
+        safe_z = self._safe_z()
+        xy_needs_travel = abs(current_x - target[0]) > 1e-3 or abs(current_y - target[1]) > 1e-3
+
+        if xy_needs_travel and abs(current_z - safe_z) > 1e-3:
+            return self.robot.move_to((current_x, current_y, safe_z), speed=speed) and False
+
+        if xy_needs_travel:
+            return self.robot.move_to((target[0], target[1], safe_z), speed=speed) and False
+
+        return self.robot.move_to(target, speed=speed)
+
     def _tick_homing(self) -> None:
         plan = self._require_motion_plan()
-        if self.robot.move_home(speed=plan.home_speed):
+        if self._move_to_with_safe_clearance(plan.home, speed=plan.home_speed):
             self.requires_homing = False # Homing completed successfully
             self._complete_active_operation()
             self.trigger("home_completed")
 
     def _tick_move_above_cube(self) -> None:
         plan = self._require_motion_plan()
-        if self.robot.move_to(plan.above_cube, speed=plan.travel_speed):
+        if self._move_to_with_safe_clearance(plan.above_cube, speed=plan.travel_speed):
             self.trigger("step_completed")
 
     def _tick_lower_to_cube(self) -> None:
