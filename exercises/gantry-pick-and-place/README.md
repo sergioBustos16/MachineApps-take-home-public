@@ -150,6 +150,9 @@ Manual acceptance test:
   - We validate robot is able to grab the object and drop it at final coordinates
 - Confirm invalid speeds over `100` or unsafe safe-Z values are rejected before save.
 
+# DEMO video
+[Google Drive video](https://drive.google.com/file/d/1UZ--lJ_QPY_Kvy7L7rBqCrKEoLHKyyeX/view?usp=sharing)
+
 ## Original Exercise Requirements
 # **Robot Pick & Place Simulation**
 
