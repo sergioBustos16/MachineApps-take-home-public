@@ -87,7 +87,7 @@ docker compose build
 # then run the containers with
 docker compose up -d
 # or there is a single command that do both build and run
-docker compose up --build
+docker compose up -d --build
 ```
 
 Open:

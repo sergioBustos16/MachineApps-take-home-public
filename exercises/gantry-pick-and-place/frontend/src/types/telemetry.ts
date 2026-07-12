@@ -63,6 +63,7 @@ export interface CommandBarProps {
 
 export interface GantryVisualizerProps {
   telemetry: TelemetrySnapshot;
+  safeZ?: number;
 }
 
 export interface ConfigurationFormProps {

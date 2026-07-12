@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import type { GantryVisualizerProps } from "../types/telemetry";
 
-export const GantryVisualizer: React.FC<GantryVisualizerProps> = ({ telemetry }) => {
+export const GantryVisualizer: React.FC<GantryVisualizerProps> = ({ telemetry, safeZ }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -147,21 +147,19 @@ export const GantryVisualizer: React.FC<GantryVisualizerProps> = ({ telemetry })
     drawMarkers(view2, true);
 
     // Draw Safe Z Line on X-Z view
-    if (telemetry.target_position) {
-      const safeZVal = telemetry.target_position.z; // or from config
-      const safeZCanvas = scaleZ(safeZVal > 0 ? safeZVal : 500, view2);
-      ctx.strokeStyle = "rgba(251, 191, 36, 0.25)"; // amber dashed line
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(view2.x, safeZCanvas);
-      ctx.lineTo(view2.x + view2.w, safeZCanvas);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = "rgba(251, 191, 36, 0.4)";
-      ctx.font = "9px Inter";
-      ctx.fillText(`Safe Z: ${safeZVal}mm`, view2.x + view2.w - 85, safeZCanvas - 4);
-    }
+    const safeZVal = safeZ !== undefined ? safeZ : (telemetry.target_position?.z ?? 300);
+    const safeZCanvas = scaleZ(safeZVal > 0 ? safeZVal : 300, view2);
+    ctx.strokeStyle = "rgba(251, 191, 36, 0.25)"; // amber dashed line
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(view2.x, safeZCanvas);
+    ctx.lineTo(view2.x + view2.w, safeZCanvas);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(251, 191, 36, 0.4)";
+    ctx.font = "9px Inter";
+    ctx.fillText(`Safe Z: ${safeZVal}mm`, view2.x + view2.w - 85, safeZCanvas - 4);
 
     // Draw the simulated Cube (Object)
     const cubeStatus = telemetry.cube_status;

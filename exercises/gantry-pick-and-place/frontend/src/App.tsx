@@ -266,7 +266,7 @@ export function App() {
 
         {/* Right Hand: Visualizer & Execution Checklist */}
         <section style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <GantryVisualizer telemetry={telemetry} />
+          <GantryVisualizer telemetry={telemetry} safeZ={config?.safe_z} />
           <StateTracker state={telemetry.state} isStale={isStale} />
         </section>
       </main>
